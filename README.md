@@ -1,8 +1,8 @@
-# blkpacman, the BlackArch repository package manager
+# blkpacman, the BlackArch mirrorlist package manager
 
 ## Intro 
 
-This is a BlackArch repo package manager meant for Arch-based distros to install cybersecurity tools.
+This is a BlackArch mirrorlist package manager meant for Arch-based distros to install cybersecurity tools.
 Searches official Arch repos -> BlackArch repo -> disables BlackArch repo in `/etc/pacman.conf`
 
 ## Why?
