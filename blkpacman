@@ -11,14 +11,14 @@ Options:
   -d, --disable      Disable BlackArch repo (comment out in pacman.conf)
   -t, --toggle       Toggle BlackArch repo on/off
   -s, --status       Show whether BlackArch repo is currently enabled
-  -S, --search <term>  Search for packages in BlackArch repo
+  -S, --search <term> [term...]  Search for packages in BlackArch repo
   -h, --help         Show this help
 
 Examples:
   blkpacman nmap                          # install from official repos
   blkpacman burpsuite                     # not found → enable BlackArch repo → install → disable
   blkpacman nmap burpsuite hydra          # mixed: official + BlackArch
-  blkpacman -S scanner                    # search BlackArch repo for packages matching "scanner"
+  blkpacman -S scanner web                # search BlackArch repo for packages matching "scanner" or "web"
   blkpacman -e                            # enable BlackArch repo permanently
   blkpacman -d                            # disable BlackArch repo permanently
 EOF
@@ -71,13 +71,18 @@ case "$1" in
         exit 0
         ;;
     -S|--search)
-        if [[ -z "$2" ]]; then
-            echo "Usage: blkpacman --search <term>"
+        shift
+        if [[ $# -eq 0 ]]; then
+            echo "Usage: blkpacman --search [package...]"
             exit 1
         fi
         enable_blackarch
         sudo pacman -Sy &>/dev/null
-        pacman -Sl blackarch 2>/dev/null | grep -i "$2" || echo "No matches in BlackArch repo."
+        pattern=""
+        for term in "$@"; do
+            pattern+="${pattern:+|}$term"
+        done
+        pacman -Sl blackarch 2>/dev/null | grep -iE "$pattern" || echo "No matches in BlackArch repo."
         disable_blackarch
         exit 0
         ;;
