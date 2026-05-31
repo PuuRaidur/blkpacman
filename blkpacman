@@ -1,0 +1,120 @@
+#!/bin/bash
+
+show_help() {
+    cat <<EOF
+Usage: blkpacman [options] [package...]
+
+Install packages — tries official repos first, falls back to BlackArch repo.
+
+Options:
+  -e, --enable       Enable BlackArch repo (uncomment in pacman.conf)
+  -d, --disable      Disable BlackArch repo (comment out in pacman.conf)
+  -t, --toggle       Toggle BlackArch repo on/off
+  -s, --status       Show whether BlackArch repo is currently enabled
+  -S, --search <term>  Search for packages in BlackArch repo
+  -h, --help         Show this help
+
+Examples:
+  blkpacman nmap                          # install from official repos
+  blkpacman burpsuite                     # not found → enable BlackArch repo → install → disable
+  blkpacman nmap burpsuite hydra          # mixed: official + BlackArch
+  blkpacman -S scanner                    # search BlackArch repo for packages matching "scanner"
+  blkpacman -e                            # enable BlackArch repo permanently
+  blkpacman -d                            # disable BlackArch repo permanently
+EOF
+}
+
+enable_blackarch() {
+    sudo sed -i 's/^#\(\[blackarch\]\)/\1/; s/^#\(Include.*blackarch-mirrorlist\)/\1/' /etc/pacman.conf
+}
+
+disable_blackarch() {
+    sudo sed -i 's/^\(\[blackarch\]\)/#\1/; s/^\(Include.*blackarch-mirrorlist\)/#\1/' /etc/pacman.conf
+}
+
+is_enabled() {
+    grep -q '^\[blackarch\]' /etc/pacman.conf
+}
+
+if [[ $# -eq 0 ]]; then
+    show_help
+    exit 0
+fi
+
+case "$1" in
+    -e|--enable)
+        enable_blackarch
+        echo "BlackArch repo enabled."
+        exit 0
+        ;;
+    -d|--disable)
+        disable_blackarch
+        echo "BlackArch repo disabled."
+        exit 0
+        ;;
+    -t|--toggle)
+        if is_enabled; then
+            disable_blackarch
+            echo "BlackArch repo disabled."
+        else
+            enable_blackarch
+            echo "BlackArch repo enabled."
+        fi
+        exit 0
+        ;;
+    -s|--status)
+        if is_enabled; then
+            echo "BlackArch repo is ENABLED"
+        else
+            echo "BlackArch repo is DISABLED"
+        fi
+        exit 0
+        ;;
+    -S|--search)
+        if [[ -z "$2" ]]; then
+            echo "Usage: blkpacman --search <term>"
+            exit 1
+        fi
+        enable_blackarch
+        sudo pacman -Sy &>/dev/null
+        pacman -Sl blackarch 2>/dev/null | grep -i "$2" || echo "No matches in BlackArch repo."
+        disable_blackarch
+        exit 0
+        ;;
+    -h|--help)
+        show_help
+        exit 0
+        ;;
+    -*)
+        echo "Unknown option: $1"
+        show_help
+        exit 1
+        ;;
+esac
+
+# Default: install packages
+disable_blackarch
+sudo pacman -Sy
+
+official=()
+blackarch=()
+
+for pkg in "$@"; do
+    if pacman -Si "$pkg" &>/dev/null; then
+        official+=("$pkg")
+    else
+        blackarch+=("$pkg")
+    fi
+done
+
+if [[ ${#official[@]} -gt 0 ]]; then
+    sudo pacman -S "${official[@]}" || exit 1
+fi
+
+if [[ ${#blackarch[@]} -gt 0 ]]; then
+    echo "Not found in official repos, trying BlackArch repo: ${blackarch[*]}"
+    enable_blackarch
+    sudo pacman -Sy
+    sudo pacman -S "${blackarch[@]/#/blackarch/}"
+    disable_blackarch
+fi
