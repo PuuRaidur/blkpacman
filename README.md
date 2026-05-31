@@ -1,4 +1,4 @@
-# blkpacman, the BlackArch repo package manager
+# blkpacman, the BlackArch repository package manager
 
 ## Intro 
 
