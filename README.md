@@ -7,7 +7,7 @@ Searches official Arch repos -> BlackArch repo -> disables BlackArch repo in `/e
 
 ## Why?
 
-BlackArch repo replaces core system packages like `glibc`, `openssl`, `linux` etc. if left enabled during `sudo pacman -Syu`, breaking your system. Unless needed, `blkpacman` keeps the repo disabled.
+BlackArch mirrorlist replaces core system packages like `glibc`, `openssl`, `linux` etc. if left enabled during `sudo pacman -Syu`, breaking your system. Unless needed, `blkpacman` keeps the repo disabled.
 
 ## Setup
 
