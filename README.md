@@ -45,7 +45,9 @@ Note that `~/.local/bin/` has to be in your `PATH`. If it isn't:
 
 ## Usage
 
-`blkpacman <pkg...>`: Mixed install -> official + BlackArch repo
+Note that `blkpacman` requires root privilege, however `sudo` prefix is not needed: it just asks you for the `sudo` password.
+
+`blkpacman <pkg...>`: Mixed install: official repos first -> BlackArch repo -> disables BlackArch repo
 
 `blkpacman -s <term>`: Search for packages in BlackArch repo
 
