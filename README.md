@@ -7,7 +7,7 @@ Searches official Arch repos first, unless BlackArch repo is explicitly enabled 
 
 ## Why?
 
-BlackArch mirrorlist replaces core system packages like `glibc`, `openssl`, `linux` etc. if left enabled during `sudo pacman -Syu` which may cause your system to break (nuking). Unless needed, `blkpacman` keeps the repo disabled.
+BlackArch mirrorlist replaces core system packages like `glibc`, `openssl`, `linux` etc. if left enabled during `sudo pacman -Syu` which may cause your system to break (nuking). Unless needed, `blkpacman` keeps the BlackArch repo disabled.
 
 ## Setup
 
