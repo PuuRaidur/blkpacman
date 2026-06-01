@@ -3,7 +3,7 @@
 ## Intro 
 
 This is a BlackArch mirrorlist package manager meant for Arch-based distros to install cybersecurity tools.
-Searches official Arch repos -> BlackArch repo -> disables BlackArch repo in `/etc/pacman.conf` by default.
+Searches official Arch repos first, unless BlackArch repo is explicitly enabled -> BlackArch repo -> disables BlackArch repo in `/etc/pacman.conf` by default.
 
 ## Why?
 
