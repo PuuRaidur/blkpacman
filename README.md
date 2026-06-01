@@ -3,11 +3,11 @@
 ## Intro 
 
 This is a BlackArch mirrorlist package manager meant for Arch-based distros to install cybersecurity tools.
-Searches official Arch repos -> BlackArch repo -> disables BlackArch repo in `/etc/pacman.conf`
+Searches official Arch repos -> BlackArch repo -> disables BlackArch repo in `/etc/pacman.conf` by default.
 
 ## Why?
 
-BlackArch mirrorlist replaces core system packages like `glibc`, `openssl`, `linux` etc. if left enabled during `sudo pacman -Syu`, breaking your system. Unless needed, `blkpacman` keeps the repo disabled.
+BlackArch mirrorlist replaces core system packages like `glibc`, `openssl`, `linux` etc. if left enabled during `sudo pacman -Syu` which may cause your system to break (nuking). Unless needed, `blkpacman` keeps the repo disabled.
 
 ## Setup
 
@@ -45,16 +45,22 @@ Note that `~/.local/bin/` has to be in your `PATH`. If it isn't:
 
 ## Usage
 
-`blkpacman [package...]`: Install package(s) by searching official repos first, then BlackArch one
+`blkpacman <pkg...>`: Mixed install -> official + BlackArch repo
 
-`blkpacman -e`: Enable BlackArch repo permanently
+`blkpacman -s <term>`: Search for packages in BlackArch repo
 
-`blkpacman -d`: Disable BlackArch repo permanently
+`blkpacman -i <pkg>`: Show info about a BlackArch package
 
-`blkpacman -t`: Toggle BlackArch repo on/off
+`blkpacman -l`: List all BlackArch categories
 
-`blkpacman -s`: Show whether BlackArch repo is enabled/disabled
+`blkpacman -c <name>`: Install all tools in a provided BlackArch category
 
-`blkpacman -S [package...]`: Search BlackArch repo for specific package(s)
+`blkpacman -b <pkg...>`: Install a package from BlackArch repo explicitly
 
-`blkpacman -h`: Show help
+`blkpacman -m`: Update BlackArch mirrorlist
+
+`blkpacman -u`: Upgrade installed BlackArch packages
+
+`blkpacman -S`: Show whether BlackArch repo is enabled/disabled
+
+`blkpacman -h`: Show usage guide
